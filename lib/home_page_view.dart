@@ -51,24 +51,31 @@ class _HomePageMainState extends State<HomePageMain> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(),
-          body: Column(
-            children: [
-              TextField(
-                controller: controllerEmail,
-                decoration: const InputDecoration(labelText: 'E-mail'),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: controllerPassword,
-                decoration: const InputDecoration(labelText: 'Password'),
-              ),
-              const SizedBox(height: 20),
-              MaterialButton(onPressed: () {
-                _loginBloc.add(LoginSubmitEvent(
-                    email: controllerEmail.text,
-                    password: controllerPassword.text));
-              })
-            ],
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              children: [
+                TextField(
+                  controller: controllerEmail,
+                  decoration: const InputDecoration(labelText: 'E-mail'),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: controllerPassword,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                ),
+                const SizedBox(height: 20),
+                MaterialButton(
+                    color: Theme.of(context).primaryColor,
+                    textColor: Colors.white,
+                    child: const Text('signin'),
+                    onPressed: () {
+                  _loginBloc.add(LoginSubmitEvent(
+                      email: controllerEmail.text,
+                      password: controllerPassword.text));
+                })
+              ],
+            ),
           ),
         );
       },
