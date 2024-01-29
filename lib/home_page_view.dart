@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:signinapp/constants/enum_blocs.dart';
 
 import 'bloc/login_bloc.dart';
 
@@ -44,9 +45,26 @@ class _HomePageMainState extends State<HomePageMain> {
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
       bloc: _loginBloc,
-      listenWhen: (prev, next) => prev.errorMessage != next.errorMessage,
+      listenWhen: (prev, next) => prev.status != next.status,
       listener: (context, state) {
-        //TODO: exibir mensagens de erro ou sucesso aqui
+        if (state.status.isError()) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                child: SizedBox(
+                  height: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [Text(state.errorMessage)],
+                  ),
+                ),
+              );
+            },
+          );
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -68,12 +86,18 @@ class _HomePageMainState extends State<HomePageMain> {
                 MaterialButton(
                     color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
-                    child: const Text('signin'),
+                    child: state.status.isLoading()
+                        ? const SizedBox(
+                            height: 15,
+                            width: 15,
+                            child: CircularProgressIndicator(
+                                color: Colors.white, strokeWidth: 2))
+                        : const Text('signin'),
                     onPressed: () {
-                  _loginBloc.add(LoginSubmitEvent(
-                      email: controllerEmail.text,
-                      password: controllerPassword.text));
-                })
+                      _loginBloc.add(LoginSubmitEvent(
+                          email: controllerEmail.text,
+                          password: controllerPassword.text));
+                    })
               ],
             ),
           ),
